@@ -16,7 +16,7 @@ app.get('/api/drive', async (req, res) => {
 
 app.get('/api/drive/:name', async (req, res) => {
     try {
-        //console.log(req.params.name);
+        //console.log(req.params);
         const files = await asyncAwait.readAlpsDir(req.params.name); //req.params voir doc express route parameters
         res.send(files);
     } catch (error) {
