@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncAwait = require('./async');
 
-const app = express();
+const app = express(); // permet d'utiliser express avec la variable app
 
 app.use('/', express.static('frontend/JS_alps-drive-project-frontend'));
 
@@ -36,7 +36,18 @@ app.delete('/api/drive/:name', async (req, res) => {
 });
 
 
-app.post('/api/drive/')
+app.post('/api/drive', async (req, res) => {
+    try {
+        //console.log(req.params.name);
+        console.log(req.query.name);
+        await asyncAwait.createFolder(req.query.name); //obliger de faire await sinon obliger de rafraichir
+        //console.log('ok');
+        res.send('Created');
+    } catch (error) {
+        console.log(error);
+        res.send('Pas created');
+    }
+});
 
 // ... Tout le code de gestion des routes (app.get) se trouve au-dessus
 

@@ -25,6 +25,13 @@ function removeDirectory(name) {
         })
 }
 
-module.exports = {readAlpsDir, removeDirectory};
+function createFolder(name) {
+    fs.mkdir('/tmp/appdrive/' + name, {recursive: true}, (err) => {
+        if (err) throw err;
+    });
+}
+
+
+module.exports = {readAlpsDir, removeDirectory, createFolder};
 
 
