@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncAwait = require('./async');
+const bb = require('express-busboy');
 
 const app = express(); // permet d'utiliser express avec la variable app
 
@@ -26,7 +27,7 @@ app.get('/api/drive/:name', async (req, res) => {
 app.delete('/api/drive/:name', async (req, res) => {
     try {
         //console.log(req.params.name);
-        await asyncAwait.removeDirectory(req.params.name); //obliger de faire await sinon obliger de rafraichir
+        await asyncAwait.removeDirectory('', req.params.name); //obliger de faire await sinon obliger de rafraichir
         //console.log('ok');
         res.send('Deleted');
     } catch (error) {
@@ -35,12 +36,23 @@ app.delete('/api/drive/:name', async (req, res) => {
     }
 });
 
+app.delete('/api/drive/:folder/:name', async (req, res) => {
+    try {
+        //console.log(req.params.name);
+        await asyncAwait.removeDirectory(req.params.folder, req.params.name); //obliger de faire await sinon obliger de rafraichir
+        //console.log('ok');
+        res.send('Deleted');
+    } catch (error) {
+        console.log(error);
+        res.send('Pas deleted');
+    }
+});
 
 app.post('/api/drive', async (req, res) => {
     try {
         //console.log(req.params.name);
         console.log(req.query.name);
-        await asyncAwait.createFolder(req.query.name); //obliger de faire await sinon obliger de rafraichir
+        await asyncAwait.createFolder('', req.query.name); //obliger de faire await sinon obliger de rafraichir
         //console.log('ok');
         res.send('Created');
     } catch (error) {
@@ -49,6 +61,31 @@ app.post('/api/drive', async (req, res) => {
     }
 });
 
+app.post('/api/drive/:folder', async (req, res) => {
+    try {
+        //console.log(req.params.name);
+        //console.log(req.query.name);
+        await asyncAwait.createFolder(req.params.folder, req.query.name); //obliger de faire await sinon obliger de rafraichir
+        //console.log('ok');
+        res.send('Created');
+    } catch (error) {
+        console.log(error);
+        res.send('Pas created');
+    }
+});
+
+app.put('/api/drive/:folder', async (req, res) => {
+    try {
+        //console.log(req.params.name);
+        //console.log(req.query.name);
+        await asyncAwait.createFolder(req.params.folder, req.query.name); //obliger de faire await sinon obliger de rafraichir
+        //console.log('ok');
+        res.send('Created');
+    } catch (error) {
+        console.log(error);
+        res.send('Pas created');
+    }
+});
 // ... Tout le code de gestion des routes (app.get) se trouve au-dessus
 
 app.use(function (req, res, next) {

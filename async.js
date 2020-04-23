@@ -36,21 +36,21 @@ async function findFileSize(path, file){
     return stat.size;
 }
 
-function removeDirectory(name) {
-    return fs.promises.stat('/tmp/appdrive/' + name) //retour de la promesse de la promesse
+function removeDirectory(folder, name) {
+    return fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, name)) //retour de la promesse de la promesse
         .then((result) => {
             if (result.isDirectory()) {
-                const removeDir = fs.promises.rmdir('/tmp/appdrive/' + name, {recursive: true}); //rmdir necessite un callback ou une promesse d'ou le .promises
+                const removeDir = fs.promises.rmdir(modulePath.join('/tmp/appdrive/', folder, name), {recursive: true}); //rmdir necessite un callback ou une promesse d'ou le .promises
                 return removeDir; //retour de la promesse
             } else {
-                const removeFile = fs.promises.unlink('/tmp/appdrive/' + name); //unlink supprime un fichier
+                const removeFile = fs.promises.unlink(modulePath.join('/tmp/appdrive/', folder, name)); //unlink supprime un fichier
                 return removeFile; //retour de la promesse
             }
         })
 }
 
-function createFolder(name) {
-    fs.mkdir('/tmp/appdrive/' + name, {recursive: true}, (err) => {
+function createFolder(files, name) {
+    fs.mkdir(modulePath.join('/tmp/appdrive/', files, name), {recursive: true}, (err) => {
         if (err) throw err;
     });
 }
