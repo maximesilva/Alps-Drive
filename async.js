@@ -1,6 +1,7 @@
 const fs = require('fs');
 const modulePath = require('path');
 
+
 async function readAlpsDir(path) {
 
     const options = {withFileTypes: true}; //variable utilisé dans await
@@ -15,6 +16,7 @@ async function readAlpsDir(path) {
 
 // function qui permet de transformer un dirent.object en promesse recursivement en un tableau
 async function mapFile(path, file){
+
     if (file.isDirectory()) {
         return {
             name: file.name, //file.name car file est un objet
@@ -31,12 +33,14 @@ async function mapFile(path, file){
 
 //function qui attend la réponse de la taille d'un fichier
 async function findFileSize(path, file){
+
     //path.join permet donner un chemin sans s'occuper des '/'
     const stat = await fs.promises.stat(modulePath.join('/tmp/appdrive/', path, file.name));
     return stat.size;
 }
 
 function removeDirectory(folder, name) {
+
     return fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, name)) //retour de la promesse de la promesse
         .then((result) => {
             if (result.isDirectory()) {
@@ -50,12 +54,15 @@ function removeDirectory(folder, name) {
 }
 
 function createFolder(files, name) {
+
     fs.mkdir(modulePath.join('/tmp/appdrive/', files, name), {recursive: true}, (err) => {
         if (err) throw err;
     });
 }
+ function uploadFile(folder, file){
 
+ }
 
-module.exports = {readAlpsDir, removeDirectory, createFolder};
+module.exports = {readAlpsDir, removeDirectory, createFolder, uploadFile};
 
 

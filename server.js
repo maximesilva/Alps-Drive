@@ -4,6 +4,11 @@ const bb = require('express-busboy');
 
 const app = express(); // permet d'utiliser express avec la variable app
 
+bb.extend(app, {
+    upload: true,
+    path: '/tmp'
+});
+
 app.use('/', express.static('frontend/JS_alps-drive-project-frontend'));
 
 app.get('/api/drive', async (req, res) => {
@@ -16,12 +21,20 @@ app.get('/api/drive', async (req, res) => {
 });
 
 app.get('/api/drive/:name', async (req, res) => {
+
+    /*if (!await asyncAwait.exists(req.params.name)) {
+        return res.status(404).send(`"${req.params.name}" has been not found`);
+    }*/ // permet de tester name existe
     try {
-        //console.log(req.params);
         const files = await asyncAwait.readAlpsDir(req.params.name); //req.params voir doc express route parameters
+
+        /*files.then((result) => {
+            res.send(result);
+        });*/ // equivalent await en promesse
+
         res.send(files);
     } catch (error) {
-        res.send('Pas bon');
+        res.status(500).send('Pas bon');
     }
 });
 app.delete('/api/drive/:name', async (req, res) => {
@@ -74,11 +87,10 @@ app.post('/api/drive/:folder', async (req, res) => {
     }
 });
 
-app.put('/api/drive/:folder', async (req, res) => {
+app.put('/api/drive', async (req, res) => {
+    console.log(req.files);
     try {
-        //console.log(req.params.name);
-        //console.log(req.query.name);
-        await asyncAwait.createFolder(req.params.folder, req.query.name); //obliger de faire await sinon obliger de rafraichir
+        await asyncAwait.uploadFile(req.params.folder, req.file); //obliger de faire await sinon obliger de rafraichir
         //console.log('ok');
         res.send('Created');
     } catch (error) {
