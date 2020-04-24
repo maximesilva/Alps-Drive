@@ -88,9 +88,21 @@ app.post('/api/drive/:folder', async (req, res) => {
 });
 
 app.put('/api/drive', async (req, res) => {
-    console.log(req.files);
+    console.log(req.files.file.filename);
     try {
-        await asyncAwait.uploadFile(req.params.folder, req.file); //obliger de faire await sinon obliger de rafraichir
+        await asyncAwait.uploadFile('', req.files.file.file, req.files.file.filename); //obliger de faire await sinon obliger de rafraichir
+        //console.log('ok');
+        res.send('Created');
+    } catch (error) {
+        console.log(error);
+        res.send('Pas created');
+    }
+});
+
+app.put('/api/drive/:folder', async (req, res) => {
+    console.log(req.files.file.filename);
+    try {
+        await asyncAwait.uploadFile(req.params.folder, req.files.file.file, req.files.file.filename); //obliger de faire await sinon obliger de rafraichir
         //console.log('ok');
         res.send('Created');
     } catch (error) {

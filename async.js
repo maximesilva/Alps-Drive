@@ -59,8 +59,11 @@ function createFolder(files, name) {
         if (err) throw err;
     });
 }
- function uploadFile(folder, file){
-
+ function uploadFile(folder, oldPath, newPath){
+     fs.rename(oldPath, modulePath.join('/tmp/appdrive/', folder, newPath), (err) => {
+         if (err) throw err;
+         console.log('Rename complete!');
+     });
  }
 
 module.exports = {readAlpsDir, removeDirectory, createFolder, uploadFile};
