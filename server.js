@@ -3,6 +3,7 @@ const asyncAwait = require('./async');
 const bb = require('express-busboy');
 
 const app = express(); // permet d'utiliser express avec la variable app
+const reg =/^[\d\w\s]+$/; // RegExp qui prend que les caractère alphanumérique
 
 bb.extend(app, {
     upload: true,
@@ -34,56 +35,74 @@ app.get('/api/drive/:name', async (req, res) => {
 
         res.send(files);
     } catch (error) {
-        res.status(500).send('Pas bon');
+        res.status(404).send(req.params.name + 'existe pas');
     }
 });
 app.delete('/api/drive/:name', async (req, res) => {
-    try {
-        //console.log(req.params.name);
-        await asyncAwait.removeDirectory('', req.params.name); //obliger de faire await sinon obliger de rafraichir
-        //console.log('ok');
-        res.send('Deleted');
-    } catch (error) {
-        console.log(error);
-        res.send('Pas deleted');
+    // si le req.params.name contient des caractère alphanumérique j'execute
+    if (reg.test(req.params.name)){
+        try {
+            //console.log(req.params.name);
+            await asyncAwait.removeDirectory('', req.params.name); //obliger de faire await sinon obliger de rafraichir
+            //console.log('ok');
+            res.send('Deleted');
+        } catch (error) {
+            console.log(error);
+            res.send('Pas deleted');
+        }
+    //sinon erreur 400
+    }else {
+        res.status(400).send('AH !');
     }
 });
 
 app.delete('/api/drive/:folder/:name', async (req, res) => {
-    try {
-        //console.log(req.params.name);
-        await asyncAwait.removeDirectory(req.params.folder, req.params.name); //obliger de faire await sinon obliger de rafraichir
-        //console.log('ok');
-        res.send('Deleted');
-    } catch (error) {
-        console.log(error);
-        res.send('Pas deleted');
+    if (reg.test(req.params.folder)) {
+        try {
+            //console.log(req.params.name);
+            await asyncAwait.removeDirectory(req.params.folder, req.params.name); //obliger de faire await sinon obliger de rafraichir
+            //console.log('ok');
+            res.send('Deleted');
+        } catch (error) {
+            console.log(error);
+            res.status(404).send('Pas deleted');
+        }
+    }else {
+        res.status(400).send('AH !');
     }
 });
 
 app.post('/api/drive', async (req, res) => {
-    try {
-        //console.log(req.params.name);
-        console.log(req.query.name);
-        await asyncAwait.createFolder('', req.query.name); //obliger de faire await sinon obliger de rafraichir
-        //console.log('ok');
-        res.send('Created');
-    } catch (error) {
-        console.log(error);
-        res.send('Pas created');
+    if (reg.test(req.query.name)) {
+        try {
+            //console.log(req.params.name);
+            console.log(req.query.name);
+            await asyncAwait.createFolder('', req.query.name); //obliger de faire await sinon obliger de rafraichir
+            //console.log('ok');
+            res.send('Created');
+        } catch (error) {
+            console.log(error);
+            res.send('Pas created');
+        }
+    }else {
+        res.status(400).send('AH !');
     }
 });
 
 app.post('/api/drive/:folder', async (req, res) => {
-    try {
-        //console.log(req.params.name);
-        //console.log(req.query.name);
-        await asyncAwait.createFolder(req.params.folder, req.query.name); //obliger de faire await sinon obliger de rafraichir
-        //console.log('ok');
-        res.send('Created');
-    } catch (error) {
-        console.log(error);
-        res.send('Pas created');
+    if (reg.test(req.query.name)) {
+        try {
+            //console.log(req.params.name);
+            //console.log(req.query.name);
+            await asyncAwait.createFolder(req.params.folder, req.query.name); //obliger de faire await sinon obliger de rafraichir
+            //console.log('ok');
+            res.send('Created');
+        } catch (error) {
+            console.log(error);
+            res.status(404).send(req.params.name + 'existe pas');
+        }
+    }else {
+        res.status(400).send('AH !');
     }
 });
 
@@ -95,7 +114,7 @@ app.put('/api/drive', async (req, res) => {
         res.send('Created');
     } catch (error) {
         console.log(error);
-        res.send('Pas created');
+        res.send('Aucun fichier présent dans la requête');
     }
 });
 
@@ -107,7 +126,7 @@ app.put('/api/drive/:folder', async (req, res) => {
         res.send('Created');
     } catch (error) {
         console.log(error);
-        res.send('Pas created');
+        res.status(404).send(req.params.folder + 'nexiste pas');
     }
 });
 // ... Tout le code de gestion des routes (app.get) se trouve au-dessus

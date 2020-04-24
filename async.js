@@ -35,32 +35,34 @@ async function mapFile(path, file){
 async function findFileSize(path, file){
 
     //path.join permet donner un chemin sans s'occuper des '/'
+    //await attend la réponse
     const stat = await fs.promises.stat(modulePath.join('/tmp/appdrive/', path, file.name));
     return stat.size;
 }
 
-function removeDirectory(folder, name) {
-
-    return fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, name)) //retour de la promesse de la promesse
+function removeDirectory(folder, folderDeleted) {
+    //retour de la promesse de la promesse
+    return fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, folderDeleted))
         .then((result) => {
             if (result.isDirectory()) {
-                const removeDir = fs.promises.rmdir(modulePath.join('/tmp/appdrive/', folder, name), {recursive: true}); //rmdir necessite un callback ou une promesse d'ou le .promises
+                //rmdir necessite un callback ou une promesse d'ou le .promises
+                const removeDir = fs.promises.rmdir(modulePath.join('/tmp/appdrive/', folder, folderDeleted), {recursive: true});
                 return removeDir; //retour de la promesse
             } else {
-                const removeFile = fs.promises.unlink(modulePath.join('/tmp/appdrive/', folder, name)); //unlink supprime un fichier
+                //unlink supprime un fichier
+                const removeFile = fs.promises.unlink(modulePath.join('/tmp/appdrive/', folder, folderDeleted));
                 return removeFile; //retour de la promesse
             }
         })
 }
 
-function createFolder(files, name) {
-
-    fs.mkdir(modulePath.join('/tmp/appdrive/', files, name), {recursive: true}, (err) => {
+async function createFolder(file, name) {
+    await fs.promises.mkdir(modulePath.join('/tmp/appdrive/', file, name), {recursive: true}, (err) => {
         if (err) throw err;
     });
 }
- function uploadFile(folder, oldPath, newPath){
-     fs.rename(oldPath, modulePath.join('/tmp/appdrive/', folder, newPath), (err) => {
+async function uploadFile(folder, oldPath, newPath){
+     await fs.promises.rename(oldPath, modulePath.join('/tmp/appdrive/', folder, newPath), (err) => {
          if (err) throw err;
          console.log('Rename complete!');
      });
