@@ -42,7 +42,7 @@ async function findFileSize(path, file){
 
 function removeDirectory(folder, folderDeleted) {
     //retour de la promesse de la promesse
-    return fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, folderDeleted))
+    fs.promises.stat(modulePath.join('/tmp/appdrive/', folder, folderDeleted))
         .then((result) => {
             if (result.isDirectory()) {
                 //rmdir necessite un callback ou une promesse d'ou le .promises
@@ -57,9 +57,8 @@ function removeDirectory(folder, folderDeleted) {
 }
 
 async function createFolder(file, name) {
-    await fs.promises.mkdir(modulePath.join('/tmp/appdrive/', file, name), {recursive: true}, (err) => {
-        if (err) throw err;
-    });
+    //async/await sert a rien peut utiliser return
+    await fs.promises.mkdir(modulePath.join('/tmp/appdrive/', file, name), {recursive: true});
 }
 async function uploadFile(folder, oldPath, newPath){
      await fs.promises.rename(oldPath, modulePath.join('/tmp/appdrive/', folder, newPath), (err) => {
